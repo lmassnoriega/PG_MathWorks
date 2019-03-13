@@ -1,0 +1,223 @@
+﻿<common:LayoutAwarePage
+    x:Name="pageRoot"
+    x:Class="Super_Secret_Formula.SelectorTareas"
+    DataContext="{Binding DefaultViewModel, RelativeSource={RelativeSource Self}}"
+    IsTabStop="false"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:Super_Secret_Formula"
+    xmlns:data="using:Super_Secret_Formula"
+    xmlns:common="using:Super_Secret_Formula.Common"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d">
+
+    <Page.Resources>
+
+        <!-- Colección de elementos que muestra esta página -->
+        <CollectionViewSource
+            x:Name="ItemsAgrupados"
+            Source="{Binding Grupos}"
+            IsSourceGrouped="true"
+            ItemsPath="TopItems"
+            d:Source="{Binding TodosLosGrupos, Source={d:DesignInstance Type=data:FuenteTareas, IsDesignTimeCreatable=True}}"/>
+        <!-- TODO: Eliminar esta línea si la clave AppName se declara en App.xaml -->
+        <x:String x:Key="AppName">Inicio: Super Secret Formula!</x:String>
+        
+        <Style x:Key="Ayuda" TargetType="Button" BasedOn="{StaticResource HelpAppBarButtonStyle}">
+            <Setter Property="AutomationProperties.AutomationId" Value="Acerca de"/>
+            <Setter Property="AutomationProperties.Name" Value="Acerca de"/>
+            <Setter Property="Content" Value=""/>
+        </Style>
+        <DataTemplate x:Key="FormulaGrande">
+            <Grid HorizontalAlignment="Left" Width="250" Height="250">
+                <Border Background="{StaticResource ListViewItemPlaceholderBackgroundThemeBrush}">
+                    <Image Source="{Binding Imagen}" Stretch="UniformToFill"/>
+                </Border>
+                <StackPanel VerticalAlignment="Bottom" Background="{StaticResource ListViewItemOverlayBackgroundThemeBrush}">
+                    <TextBlock Text="{Binding Nombre}" Foreground="{StaticResource ListViewItemOverlayForegroundThemeBrush}" Style="{StaticResource TitleTextStyle}" Height="60" Margin="15,0,15,0"/>
+                </StackPanel>
+            </Grid>
+        </DataTemplate>
+        
+        <DataTemplate x:Key="FormulaPequeño">
+            <Grid Margin="6">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <Border Background="{StaticResource ListViewItemPlaceholderBackgroundThemeBrush}" Width="60" Height="60">
+                    <Image Source="{Binding Imagen}" Stretch="UniformToFill"/>
+                </Border>
+                <StackPanel Grid.Column="1" Margin="10,0,0,0">
+                    <TextBlock Text="{Binding Nombre}" Style="{StaticResource ItemTextStyle}" MaxHeight="40"/>
+                </StackPanel>
+            </Grid>
+        </DataTemplate>
+        
+        
+    </Page.Resources>
+
+    <common:LayoutAwarePage.BottomAppBar>
+        <AppBar x:Name="Estado" BorderBrush="{x:Null}" Background="{x:Null}">
+            <AppBar.ContentTransitions>
+                <TransitionCollection>
+                    <ContentThemeTransition HorizontalOffset="-40" VerticalOffset="40"/>
+                </TransitionCollection>
+            </AppBar.ContentTransitions>
+            <Grid x:Name="BarraInf" Style="{StaticResource LayoutRootStyle}" Background="{x:Null}">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="100"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <Button x:Name="Acerca" Grid.Column="0" Style="{StaticResource Ayuda}" Click="AcercaDe"/>
+            </Grid>
+        </AppBar>
+    </common:LayoutAwarePage.BottomAppBar>
+    
+    
+    
+    <!--
+        Esta cuadrícula actúa como panel raíz de la página que define dos filas:
+        * La fila 0 contiene el botón Atrás y el título de página
+        * La fila 1 contiene el resto del diseño de página
+    -->
+    <!--
+        Esta cuadrícula actúa como panel raíz de la página que define dos filas:
+        * La fila 0 contiene el botón Atrás y el título de página
+        * La fila 1 contiene el resto del diseño de página
+    -->
+    <Grid Style="{StaticResource LayoutRootStyle}">
+        <Grid.Background>
+            <ImageBrush Stretch="UniformToFill" ImageSource="Assets/Abstract.png"/>
+        </Grid.Background>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="140"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <VisualStateManager.VisualStateGroups>
+
+            <!-- Los estados visuales reflejan el estado de vista de la aplicación -->
+            <VisualStateGroup x:Name="ApplicationViewStates">
+                <VisualState x:Name="FullScreenLandscape"/>
+                <VisualState x:Name="Filled"/>
+
+                <!-- Toda la página respeta la convención de margen más estrecho de 100 píxeles para Portrait -->
+                <VisualState x:Name="FullScreenPortrait">
+                    <Storyboard>
+                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="backButton" Storyboard.TargetProperty="Style">
+                            <DiscreteObjectKeyFrame KeyTime="0" Value="{StaticResource PortraitBackButtonStyle}"/>
+                        </ObjectAnimationUsingKeyFrames>
+                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="itemGridView" Storyboard.TargetProperty="Padding">
+                            <DiscreteObjectKeyFrame KeyTime="0" Value="96,0,86,56"/>
+                        </ObjectAnimationUsingKeyFrames>
+                    </Storyboard>
+                </VisualState>
+
+                <!--
+                    El botón Atrás y el título tienen estilos distintos en Snapped y la representación de lista se sustituye
+                    por la cuadrícula mostrada en el resto de estados de vista
+                -->
+                <VisualState x:Name="Snapped">
+                    <Storyboard>
+                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="backButton" Storyboard.TargetProperty="Style">
+                            <DiscreteObjectKeyFrame KeyTime="0" Value="{StaticResource SnappedBackButtonStyle}"/>
+                        </ObjectAnimationUsingKeyFrames>
+                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="pageTitle" Storyboard.TargetProperty="Style">
+                            <DiscreteObjectKeyFrame KeyTime="0" Value="{StaticResource SnappedPageHeaderTextStyle}"/>
+                        </ObjectAnimationUsingKeyFrames>
+
+                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="itemListView" Storyboard.TargetProperty="Visibility">
+                            <DiscreteObjectKeyFrame KeyTime="0" Value="Visible"/>
+                        </ObjectAnimationUsingKeyFrames>
+                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="itemGridView" Storyboard.TargetProperty="Visibility">
+                            <DiscreteObjectKeyFrame KeyTime="0" Value="Collapsed"/>
+                        </ObjectAnimationUsingKeyFrames>
+                    </Storyboard>
+                </VisualState>
+            </VisualStateGroup>
+        </VisualStateManager.VisualStateGroups>
+
+        <!-- Botón Atrás y título de página -->
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <Button x:Name="backButton" Click="GoBack" IsEnabled="{Binding Frame.CanGoBack, ElementName=pageRoot}" Style="{StaticResource BackButtonStyle}"/>
+            <TextBlock x:Name="pageTitle" Grid.Column="1" Text="{StaticResource AppName}" Style="{StaticResource PageHeaderTextStyle}"/>
+        </Grid>
+
+        <!-- Cuadrícula de desplazamiento horizontal usada en la mayoría de los estados de vista -->
+        <GridView
+            x:Name="itemGridView"
+            AutomationProperties.AutomationId="ItemsGridView"
+            AutomationProperties.Name="Items"
+            TabIndex="1"
+            Grid.Row="1"
+            Margin="0,-4,0,0"
+            Padding="116,0,116,46"
+            ItemsSource="{Binding Source={StaticResource ItemsAgrupados}}"
+            ItemTemplate="{StaticResource FormulaGrande}"
+            SelectionMode="None"
+            IsItemClickEnabled="True"
+            ItemClick="ClickItem">
+            
+            <GridView.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <VirtualizingStackPanel Orientation="Horizontal"/>
+                </ItemsPanelTemplate>
+            </GridView.ItemsPanel>
+            <GridView.GroupStyle>
+                <GroupStyle>
+                    <GroupStyle.HeaderTemplate>
+                        <DataTemplate>
+                            <Grid Margin="1,0,0,6">
+                                <Button
+                                    AutomationProperties.Name="TituloGrupo"
+                                    Content="{Binding Nombre}"
+                                    Style="{StaticResource TextButtonStyle}"/>
+                            </Grid>
+                        </DataTemplate>
+                    </GroupStyle.HeaderTemplate>
+                    <GroupStyle.Panel>
+                        <ItemsPanelTemplate>
+                            <VariableSizedWrapGrid Orientation="Vertical" Margin="0,0,80,0"/>
+                        </ItemsPanelTemplate>
+                    </GroupStyle.Panel>
+                </GroupStyle>
+            </GridView.GroupStyle>
+        </GridView>
+
+        <!-- Lista de desplazamiento vertical usada solamente en Snapped -->
+        <ListView
+            x:Name="itemListView"
+            AutomationProperties.AutomationId="ItemsListView"
+            AutomationProperties.Name="Items"
+            TabIndex="1"
+            Grid.Row="1"
+            Visibility="Collapsed"
+            Margin="0,-10,0,0"
+            Padding="10,0,0,60"
+            ItemsSource="{Binding Source={StaticResource ItemsAgrupados}}"
+            ItemTemplate="{StaticResource FormulaPequeño}"
+            ItemClick="ClickItem">
+            
+            <ListView.GroupStyle>
+                <GroupStyle>
+                    <GroupStyle.HeaderTemplate>
+                        <DataTemplate>
+                            <Grid Margin="7,7,0,0">
+                                <Button
+                                    AutomationProperties.Name="Group Title"
+                                    Content="{Binding Nombre}"
+                                    Style="{StaticResource TextButtonStyle}"/>
+                            </Grid>
+                        </DataTemplate>
+                    </GroupStyle.HeaderTemplate>
+                </GroupStyle>
+            </ListView.GroupStyle>
+        </ListView> 
+    </Grid>
+</common:LayoutAwarePage>

@@ -1,0 +1,15 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:local="clr-namespace:MathWorks.Test.Styles">
+
+	<Style x:Key="Basic" TargetType="FrameworkElement">
+		<Setter Property="Margin" Value="5"/>
+	</Style>
+	<Style x:Key="RadioButtonStyle" TargetType="RadioButton" BasedOn="{StaticResource Basic}">
+		<Setter Property="GroupName" Value="options"/>
+	</Style>
+	<Style x:Key="ContextTextBox" BasedOn="{StaticResource Basic}" TargetType="TextBox">
+		<Setter Property="TextAlignment" Value="Center"/>
+	</Style>
+	
+</ResourceDictionary>
